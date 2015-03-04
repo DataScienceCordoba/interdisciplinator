@@ -3,6 +3,7 @@
 
 import pandas as pd
 from collections import OrderedDict
+import random
 
 df = pd.read_csv('formulario.csv')
 
@@ -35,18 +36,84 @@ for i in range(0, 8):
 exp_grupo = [[]] * 8
 s = set([])
 exp_grupo[0] = set(experts[0])
-#print exp_grupo[0]
+print '--------------' + index[0] + '--------------'
+print pd.Series(list(exp_grupo[0]))
 #t = len(exp_grupo[0])
 for i in range (1, 8):
 	s = s.union(set(exp_grupo[i-1]))
 	exp_grupo[i] = set(experts[i]).difference(s)
 	#t = t + len(exp_grupo[i])
-	#print exp_grupo[i]
+	print '--------------' + index[i] + '--------------'
+	print pd.Series(list(exp_grupo[i]))
 	#print t
 
-all_exp = set(experts[0])
+#all_exp = set(experts[0])
+all_exp_list = list(experts[0])
 for i in range (1, 8):
-	all_exp = all_exp.union(set(experts[i]))
+	#all_exp = all_exp.union(set(experts[i]))
+	all_exp_list = all_exp_list + list(experts[i])
 
-t = len(all_exp)
+print type (all_exp_list)
+random.shuffle(all_exp_list,  random.random)
+exp_grupo = set(all_exp_list)
+
+'''	
+print 'set'
+print all_exp
+print 'list'
+print all_exp_list
+'''
+t = len(exp_grupo)
+
 #Repartimos parejo entre los grupos:
+members = set(df['Apellido'])
+cant_members = len(members)
+print '\n============================='
+print "Cantidad de miembros:" + str(cant_members)
+
+g=5
+
+cant_grupos = cant_members/g
+print '\n============================='
+print "Cantidad de grupos:" + str(cant_grupos)
+
+'''
+resto = cant_members - cant_grupos * g
+print '\n============================='
+print "Personas sin grupo:" + str(resto)
+'''
+
+print '\n============================='
+print '\n===========Grupos:============='
+print '\n============================='
+
+not_exp_members = set(members).difference(exp_grupo)
+lst = list(exp_grupo)
+not_exp_list = list(not_exp_members)
+
+exps = [ lst[i::cant_grupos] for i in xrange(cant_grupos) ]
+not_exp = [ not_exp_list[i::cant_grupos] for i in xrange(cant_grupos) ]
+not_exp.reverse()
+
+grupos = [[]] * cant_grupos
+for i in range(0, cant_grupos):
+	grupos[i] = exps[i] + not_exp[i]
+	print '\nGrupo' + str(i)
+	print grupos[i]
+
+print '\n============================='
+print '\n============================='
+print '\n============================='
+'''
+
+print '\n============================='
+print len(not_exp_list)
+print len(exp_grupo)
+print 'not experts'
+print not_exp_list
+print 'grupos'
+a = 2
+grupos = [not_exp_list[i:i+a] for i  in range(0, len(not_exp_list), a)]
+'''
+
+
