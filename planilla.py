@@ -17,21 +17,21 @@ s = sorted(l, key=lambda x: x[1])
 experts = [[]] * 8
 index = {0 : 'Aprendizaje Automático (Machine Learning)', 
          1 : 'Conocimiento de Dominio(s) de Aplicación', 
-		 2 : 'Visualización de Datos', 
-		 3 : 'Comunicación y Presentación de ideas', 
-		 4 : 'Estadística', 
-		 5 : 'Matemática', 
-		 6 : 'Programación', 
-		 7 : 'Ciencias de la Computación'}
+         2 : 'Visualización de Datos', 
+         3 : 'Comunicación y Presentación de ideas', 
+         4 : 'Estadística', 
+         5 : 'Matemática', 
+         6 : 'Programación', 
+         7 : 'Ciencias de la Computación'}
 
 #experts[i] contiene los expertos y avanzados de cada conjunto de mayor a menor:
 for i in range(0, 8):
-	aux_ex = df[df[index[i]] == 'Avanzado']
-	aux_ex_2= df[df[index[i]] == 'Expert@']
-	l = aux_ex['Apellido']
-	l.append(aux_ex_2['Apellido'])
-	experts[i] = l
-	
+    aux_ex = df[df[index[i]] == 'Avanzado']
+    aux_ex_2= df[df[index[i]] == 'Expert@']
+    l = aux_ex['Apellido']
+    l.append(aux_ex_2['Apellido'])
+    experts[i] = l
+    
 #Hacemos grupos sin repeticiones ni personas en comun:
 exp_grupo = [[]] * 8
 s = set([])
@@ -40,24 +40,24 @@ print '--------------' + index[0] + '--------------'
 print pd.Series(list(exp_grupo[0]))
 #t = len(exp_grupo[0])
 for i in range (1, 8):
-	s = s.union(set(exp_grupo[i-1]))
-	exp_grupo[i] = set(experts[i]).difference(s)
-	#t = t + len(exp_grupo[i])
-	print '--------------' + index[i] + '--------------'
-	print pd.Series(list(exp_grupo[i]))
-	#print t
+    s = s.union(set(exp_grupo[i-1]))
+    exp_grupo[i] = set(experts[i]).difference(s)
+    #t = t + len(exp_grupo[i])
+    print '--------------' + index[i] + '--------------'
+    print pd.Series(list(exp_grupo[i]))
+    #print t
 
 #all_exp = set(experts[0])
 all_exp_list = list(experts[0])
 for i in range (1, 8):
-	#all_exp = all_exp.union(set(experts[i]))
-	all_exp_list = all_exp_list + list(experts[i])
+    #all_exp = all_exp.union(set(experts[i]))
+    all_exp_list = all_exp_list + list(experts[i])
 
 print type (all_exp_list)
 random.shuffle(all_exp_list,  random.random)
 exp_grupo = set(all_exp_list)
 
-'''	
+''' 
 print 'set'
 print all_exp
 print 'list'
@@ -95,15 +95,23 @@ exps = [ lst[i::cant_grupos] for i in xrange(cant_grupos) ]
 not_exp = [ not_exp_list[i::cant_grupos] for i in xrange(cant_grupos) ]
 not_exp.reverse()
 
+map_grupos = {}
 grupos = [[]] * cant_grupos
 for i in range(0, cant_grupos):
-	grupos[i] = exps[i] + not_exp[i]
-	print '\nGrupo' + str(i)
-	print grupos[i]
+    grupos[i] = exps[i] + not_exp[i]
+    print '\nGrupo' + str(i)
+    print grupos[i]
+    for apellido in grupos[i]:
+        map_grupos[apellido] = i
 
 print '\n============================='
 print '\n============================='
 print '\n============================='
+
+
+df['Grupo'] = df.Apellido.apply(lambda x: map_grupos[x])
+df[['Nombres', 'Apellido', 'Grupo']].to_csv('lista_grupos.csv', index=False)
+
 '''
 
 print '\n============================='
