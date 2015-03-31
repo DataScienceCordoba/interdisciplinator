@@ -6,6 +6,7 @@ from collections import OrderedDict
 import random
 
 df = pd.read_csv('formulario.csv')
+f = open('grupos', 'w')
 
 counts = {c: sum(df[c] == 'Principiante') for c in df.columns}
 
@@ -68,14 +69,14 @@ t = len(exp_grupo)
 #Repartimos parejo entre los grupos:
 members = set(df['Apellido'])
 cant_members = len(members)
-print '\n============================='
-print "Cantidad de miembros:" + str(cant_members)
+f.write( '\n=============================')
+f.write( "Cantidad de miembros:" + str(cant_members))
 
 g=5
 
 cant_grupos = cant_members/g
-print '\n============================='
-print "Cantidad de grupos:" + str(cant_grupos)
+f.write( '\n=============================')
+f.write( "Cantidad de grupos:" + str(cant_grupos))
 
 '''
 resto = cant_members - cant_grupos * g
@@ -83,9 +84,9 @@ print '\n============================='
 print "Personas sin grupo:" + str(resto)
 '''
 
-print '\n============================='
-print '\n===========Grupos:============='
-print '\n============================='
+f.write( '\n=============================')
+f.write( '\n===========Grupos:=============')
+f.write( '\n=============================')
 
 not_exp_members = set(members).difference(exp_grupo)
 lst = list(exp_grupo)
@@ -99,14 +100,14 @@ map_grupos = {}
 grupos = [[]] * cant_grupos
 for i in range(0, cant_grupos):
     grupos[i] = exps[i] + not_exp[i]
-    print '\nGrupo' + str(i)
-    print grupos[i]
+    f.write( '\nGrupo' + str(i))
+    f.write( str(grupos[i]))
     for apellido in grupos[i]:
         map_grupos[apellido] = i
 
-print '\n============================='
-print '\n============================='
-print '\n============================='
+f.write( '\n=============================')
+f.write ('\n=============================')
+f.write( '\n=============================')
 
 
 df['Grupo'] = df.Apellido.apply(lambda x: map_grupos[x])
