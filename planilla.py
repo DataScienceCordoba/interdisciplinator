@@ -5,10 +5,12 @@ import pandas as pd
 from collections import OrderedDict
 import random
 
-df = pd.read_csv('formulario.csv')
+df = pd.read_csv('mergedData.csv')
 f = open('grupos', 'w')
 
-counts = {c: sum(df[c] == 'Principiante') for c in df.columns}
+columns= ['Aprendizaje Automático (Machine Learning)', 'Conocimiento de Dominio(s) de Aplicación', 
+'Visualización de Datos','Comunicación y Presentación de ideas', 'Estadística', 'Programación', 'Ciencias de la Computación']
+counts = {c: sum(df[c] == 'Principiante') for c in columns}
 
 l = counts.items()
 
@@ -29,23 +31,23 @@ index = {0 : 'Aprendizaje Automático (Machine Learning)',
 for i in range(0, 8):
     aux_ex = df[df[index[i]] == 'Avanzado']
     aux_ex_2= df[df[index[i]] == 'Expert@']
-    l = aux_ex['Apellido']
-    l.append(aux_ex_2['Apellido'])
+    l = aux_ex['Name']
+    l.append(aux_ex_2['Name'])
     experts[i] = l
     
 #Hacemos grupos sin repeticiones ni personas en comun:
 exp_grupo = [[]] * 8
 s = set([])
 exp_grupo[0] = set(experts[0])
-print '--------------' + index[0] + '--------------'
-print pd.Series(list(exp_grupo[0]))
+print ('--------------' + index[0] + '--------------')
+print (pd.Series(list(exp_grupo[0])))
 #t = len(exp_grupo[0])
 for i in range (1, 8):
     s = s.union(set(exp_grupo[i-1]))
     exp_grupo[i] = set(experts[i]).difference(s)
     #t = t + len(exp_grupo[i])
-    print '--------------' + index[i] + '--------------'
-    print pd.Series(list(exp_grupo[i]))
+    print ('--------------' + index[i] + '--------------')
+    print (pd.Series(list(exp_grupo[i])))
     #print t
 
 #all_exp = set(experts[0])
@@ -54,7 +56,7 @@ for i in range (1, 8):
     #all_exp = all_exp.union(set(experts[i]))
     all_exp_list = all_exp_list + list(experts[i])
 
-print type (all_exp_list)
+#print type (all_exp_list)
 random.shuffle(all_exp_list,  random.random)
 exp_grupo = set(all_exp_list)
 
@@ -67,14 +69,14 @@ print all_exp_list
 t = len(exp_grupo)
 
 #Repartimos parejo entre los grupos:
-members = set(df['Apellido'])
+members = set(df['Name'])
 cant_members = len(members)
 f.write( '\n=============================')
 f.write( "Cantidad de miembros:" + str(cant_members))
 
 g=5
 
-cant_grupos = cant_members/g
+cant_grupos = int(cant_members/g)
 f.write( '\n=============================')
 f.write( "Cantidad de grupos:" + str(cant_grupos))
 
@@ -92,8 +94,8 @@ not_exp_members = set(members).difference(exp_grupo)
 lst = list(exp_grupo)
 not_exp_list = list(not_exp_members)
 
-exps = [ lst[i::cant_grupos] for i in xrange(cant_grupos) ]
-not_exp = [ not_exp_list[i::cant_grupos] for i in xrange(cant_grupos) ]
+exps = [ lst[i::cant_grupos] for i in range(0, cant_grupos) ]
+not_exp = [ not_exp_list[i::cant_grupos] for i in range(0, cant_grupos) ]
 not_exp.reverse()
 
 map_grupos = {}
@@ -110,8 +112,8 @@ f.write ('\n=============================')
 f.write( '\n=============================')
 
 
-df['Grupo'] = df.Apellido.apply(lambda x: map_grupos[x])
-df[['Nombres', 'Apellido', 'Grupo']].to_csv('lista_grupos.csv', index=False)
+df['Grupo'] = df.Name.apply(lambda x: map_grupos[x])
+df[['Name', 'Grupo']].to_csv('lista_grupos.csv', index=False)
 
 '''
 
